@@ -1,0 +1,1651 @@
+cat > /mnt/user-data/outputs/al_shaltout_erp.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آل شلتوت للتجارة - نظام ERP</title>
+<style>
+:root {
+  --primary: #1a3c5e;
+  --primary-light: #2a5a8e;
+  --accent: #c8973a;
+  --accent-light: #f0b855;
+  --bg: #f4f6f9;
+  --sidebar-bg: #0f2744;
+  --sidebar-text: #a8bfd4;
+  --sidebar-active: #c8973a;
+  --white: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e2d3d;
+  --text-muted: #6b7c93;
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
+  --info: #0284c7;
+  --info-bg: #e0f2fe;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; display: flex; height: 100vh; overflow: hidden; direction: rtl; }
+
+/* Sidebar */
+#sidebar {
+  width: 240px; min-width: 240px; background: var(--sidebar-bg); display: flex; flex-direction: column; height: 100vh; overflow-y: auto; transition: width 0.3s; z-index: 100;
+}
+#sidebar.collapsed { width: 60px; min-width: 60px; }
+.sidebar-logo {
+  padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 12px;
+}
+.logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 16px; flex-shrink: 0; }
+.logo-text { color: white; font-size: 13px; font-weight: 600; line-height: 1.3; }
+.logo-sub { color: var(--accent-light); font-size: 10px; font-weight: 400; }
+
+.sidebar-section { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.sidebar-section-title { padding: 8px 16px 4px; font-size: 10px; text-transform: uppercase; color: rgba(168,191,212,0.5); letter-spacing: 0.08em; white-space: nowrap; overflow: hidden; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; color: var(--sidebar-text); transition: all 0.15s; border-right: 3px solid transparent; white-space: nowrap; overflow: hidden;
+}
+.nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+.nav-item.active { background: rgba(200,151,58,0.15); color: var(--accent-light); border-right-color: var(--accent); }
+.nav-icon { font-size: 18px; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-label { font-size: 13px; }
+.nav-badge { background: var(--accent); color: white; border-radius: 10px; padding: 1px 7px; font-size: 10px; margin-right: auto; }
+
+/* Main */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Top bar */
+#topbar {
+  background: white; border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+}
+.topbar-title { font-size: 16px; font-weight: 600; color: var(--primary); }
+.topbar-right { margin-right: auto; display: flex; align-items: center; gap: 12px; }
+.topbar-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 14px; cursor: pointer; font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+.topbar-btn:hover { border-color: var(--primary); color: var(--primary); }
+.user-badge { display: flex; align-items: center; gap: 8px; }
+.user-avatar { width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; }
+.user-name { font-size: 13px; font-weight: 500; }
+
+/* Content */
+#content { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* Cards */
+.card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--card-shadow); margin-bottom: 20px; }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-size: 15px; font-weight: 600; color: var(--primary); }
+.card-body { padding: 20px; }
+
+/* Stats grid */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.stat-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 16px 20px; box-shadow: var(--card-shadow); }
+.stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.stat-value { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.stat-change { font-size: 11px; }
+.stat-change.up { color: var(--success); }
+.stat-change.down { color: var(--danger); }
+.stat-icon { float: left; width: 44px; height: 44px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-top: 4px; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #f8fafc; }
+th { padding: 10px 14px; text-align: right; font-size: 12px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; font-size: 13px; vertical-align: middle; }
+tr:hover td { background: #fafbfc; }
+tr:last-child td { border-bottom: none; }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-success { background: var(--success-bg); color: #15803d; }
+.badge-danger { background: var(--danger-bg); color: #b91c1c; }
+.badge-warning { background: var(--warning-bg); color: #92400e; }
+.badge-info { background: var(--info-bg); color: #0369a1; }
+.badge-gray { background: #f1f5f9; color: var(--text-muted); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 500; border: none; transition: all 0.15s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-light); }
+.btn-accent { background: var(--accent); color: white; }
+.btn-accent:hover { background: var(--accent-light); }
+.btn-outline { background: white; color: var(--text); border: 1px solid var(--border); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-icon { padding: 6px 10px; }
+
+/* Forms */
+.form-row { display: grid; gap: 16px; margin-bottom: 16px; }
+.form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.form-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+.form-control { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text); background: white; outline: none; transition: border-color 0.15s; direction: rtl; }
+.form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,60,94,0.08); }
+select.form-control { cursor: pointer; }
+
+/* Login */
+#login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f2744 0%, #1a3c5e 60%, #c8973a 100%); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.login-card { background: white; border-radius: 16px; padding: 40px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.login-logo { text-align: center; margin-bottom: 28px; }
+.login-logo-icon { width: 64px; height: 64px; background: var(--primary); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: white; margin-bottom: 12px; }
+.login-title { font-size: 20px; font-weight: 700; color: var(--primary); }
+.login-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.login-form .form-group { margin-bottom: 16px; }
+.login-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+.login-btn:hover { background: var(--primary-light); }
+.login-error { background: var(--danger-bg); color: var(--danger); padding: 8px 12px; border-radius: var(--radius); font-size: 12px; margin-top: 8px; display: none; }
+
+/* Dashboard charts placeholder */
+.chart-bar-container { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding: 0 8px; }
+.chart-bar { flex: 1; background: var(--primary); border-radius: 4px 4px 0 0; opacity: 0.8; position: relative; cursor: pointer; transition: opacity 0.2s; }
+.chart-bar:hover { opacity: 1; }
+.chart-bar .bar-label { position: absolute; bottom: -20px; width: 100%; text-align: center; font-size: 10px; color: var(--text-muted); }
+.chart-bar .bar-val { position: absolute; top: -18px; width: 100%; text-align: center; font-size: 10px; color: var(--primary); font-weight: 600; }
+
+/* Alert */
+.alert { padding: 12px 16px; border-radius: var(--radius); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.alert-warning { background: var(--warning-bg); color: #92400e; border-right: 3px solid var(--warning); }
+.alert-danger { background: var(--danger-bg); color: #b91c1c; border-right: 3px solid var(--danger); }
+.alert-success { background: var(--success-bg); color: #15803d; border-right: 3px solid var(--success); }
+.alert-info { background: var(--info-bg); color: #0369a1; border-right: 3px solid var(--info); }
+
+/* Misc */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.page-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+.page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.text-muted { color: var(--text-muted); }
+.fw-600 { font-weight: 600; }
+.d-flex { display: flex; }
+.align-center { align-items: center; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.ms-auto { margin-right: auto; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* Progress */
+.progress { background: #e2e8f0; border-radius: 20px; height: 8px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 20px; background: var(--primary); }
+
+/* Modal overlay simulation */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border-radius: var(--radius-lg); width: 600px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 15px; font-weight: 600; color: var(--primary); }
+.modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text-muted); }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-start; }
+
+/* Notification dot */
+.notif-dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; position: absolute; top: 6px; left: 6px; }
+.rel { position: relative; }
+
+/* Print */
+@media print {
+  #sidebar, #topbar { display: none; }
+  #content { padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-card" dir="rtl">
+    <div class="login-logo">
+      <div class="login-logo-icon">ش</div>
+      <div class="login-title">آل شلتوت للتجارة</div>
+      <div class="login-sub">نظام إدارة الموارد المؤسسية ERP</div>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label>اسم المستخدم</label>
+        <input type="text" class="form-control" id="login-user" placeholder="أدخل اسم المستخدم" value="admin">
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" class="form-control" id="login-pass" placeholder="أدخل كلمة المرور" value="admin123">
+      </div>
+      <div class="login-error" id="login-error">❌ اسم المستخدم أو كلمة المرور غير صحيحة</div>
+      <button class="login-btn" onclick="doLogin()">تسجيل الدخول</button>
+    </div>
+    <div style="margin-top:20px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 12px; color: var(--text-muted); text-align: center;">
+      المستخدم: <strong>admin</strong> — كلمة المرور: <strong>admin123</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">ش</div>
+    <div class="logo-text">
+      آل شلتوت للتجارة
+      <div class="logo-sub">نظام ERP المتكامل</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">الرئيسية</div>
+    <div class="nav-item active" onclick="showPage('dashboard', this)">
+      <span class="nav-icon">📊</span><span class="nav-label">لوحة التحكم</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">المالية والمحاسبة</div>
+    <div class="nav-item" onclick="showPage('accounts', this)">
+      <span class="nav-icon">📋</span><span class="nav-label">شجرة الحسابات</span>
+    </div>
+    <div class="nav-item" onclick="showPage('journal', this)">
+      <span class="nav-icon">📝</span><span class="nav-label">القيود اليومية</span>
+    </div>
+    <div class="nav-item" onclick="showPage('treasury', this)">
+      <span class="nav-icon">🏦</span><span class="nav-label">الصندوق والبنوك</span>
+    </div>
+    <div class="nav-item" onclick="showPage('financial-reports', this)">
+      <span class="nav-icon">📈</span><span class="nav-label">التقارير المالية</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">التجارة</div>
+    <div class="nav-item" onclick="showPage('sales', this)">
+      <span class="nav-icon">🛒</span><span class="nav-label">المبيعات</span>
+    </div>
+    <div class="nav-item" onclick="showPage('purchases', this)">
+      <span class="nav-icon">📦</span><span class="nav-label">المشتريات</span>
+    </div>
+    <div class="nav-item" onclick="showPage('inventory', this)">
+      <span class="nav-icon">🏪</span><span class="nav-label">إدارة المخازن</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">الموارد البشرية</div>
+    <div class="nav-item" onclick="showPage('employees', this)">
+      <span class="nav-icon">👥</span><span class="nav-label">الموظفون</span>
+    </div>
+    <div class="nav-item" onclick="showPage('payroll', this)">
+      <span class="nav-icon">💰</span><span class="nav-label">الرواتب</span>
+    </div>
+    <div class="nav-item" onclick="showPage('attendance', this)">
+      <span class="nav-icon">🕐</span><span class="nav-label">الحضور والإجازات</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">إدارة العلاقات</div>
+    <div class="nav-item" onclick="showPage('customers', this)">
+      <span class="nav-icon">🤝</span><span class="nav-label">العملاء</span>
+    </div>
+    <div class="nav-item" onclick="showPage('suppliers', this)">
+      <span class="nav-icon">🏭</span><span class="nav-label">الموردون</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">الإدارة</div>
+    <div class="nav-item" onclick="showPage('fixed-assets', this)">
+      <span class="nav-icon">🏗️</span><span class="nav-label">الأصول الثابتة</span>
+    </div>
+    <div class="nav-item" onclick="showPage('branches', this)">
+      <span class="nav-icon">🏢</span><span class="nav-label">الفروع</span>
+    </div>
+    <div class="nav-item" onclick="showPage('approvals', this)">
+      <span class="nav-icon">✅</span><span class="nav-label">الموافقات</span>
+      <span class="nav-badge">5</span>
+    </div>
+    <div class="nav-item" onclick="showPage('settings', this)">
+      <span class="nav-icon">⚙️</span><span class="nav-label">الإعدادات</span>
+    </div>
+    <div class="nav-item" onclick="showPage('users', this)">
+      <span class="nav-icon">👤</span><span class="nav-label">المستخدمون</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <span id="topbar-title" class="topbar-title">لوحة التحكم</span>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="exportData()">⬇️ تصدير</button>
+      <button class="topbar-btn" onclick="printPage()">🖨️ طباعة</button>
+      <div class="rel">
+        <button class="topbar-btn" onclick="showNotifs()">🔔 الإشعارات</button>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="user-badge">
+        <div class="user-avatar">م</div>
+        <div>
+          <div class="user-name">المدير العام</div>
+          <div style="font-size:10px;color:var(--text-muted)">Admin</div>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">خروج</button>
+    </div>
+  </div>
+
+  <div id="content">
+    <!-- Pages rendered here -->
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const DB = {
+  users: [
+    {id:1, username:'admin', password:'admin123', name:'المدير العام', role:'مدير النظام', status:'نشط', perms:'كاملة'},
+    {id:2, username:'ahmad', password:'1234', name:'أحمد السيد', role:'محاسب', status:'نشط', perms:'مالية'},
+    {id:3, username:'sara', password:'1234', name:'سارة علي', role:'مبيعات', status:'نشط', perms:'مبيعات'},
+  ],
+  accounts: [
+    {code:'1000', name:'الأصول', type:'رئيسي', level:1, balance:0},
+    {code:'1100', name:'الأصول المتداولة', type:'رئيسي', level:2, balance:0},
+    {code:'1110', name:'النقدية والبنوك', type:'فرعي', level:3, balance:850000},
+    {code:'1120', name:'الذمم المدينة - العملاء', type:'فرعي', level:3, balance:320000},
+    {code:'1130', name:'المخزون', type:'فرعي', level:3, balance:480000},
+    {code:'1200', name:'الأصول الثابتة', type:'رئيسي', level:2, balance:0},
+    {code:'1210', name:'السيارات والمعدات', type:'فرعي', level:3, balance:250000},
+    {code:'1220', name:'مجمع الإهلاك', type:'فرعي', level:3, balance:-45000},
+    {code:'2000', name:'الالتزامات', type:'رئيسي', level:1, balance:0},
+    {code:'2100', name:'الذمم الدائنة - موردون', type:'فرعي', level:3, balance:180000},
+    {code:'3000', name:'حقوق الملكية', type:'رئيسي', level:1, balance:0},
+    {code:'3100', name:'رأس المال', type:'فرعي', level:3, balance:1200000},
+    {code:'4000', name:'الإيرادات', type:'رئيسي', level:1, balance:0},
+    {code:'4100', name:'إيرادات المبيعات', type:'فرعي', level:3, balance:1850000},
+    {code:'5000', name:'المصروفات', type:'رئيسي', level:1, balance:0},
+    {code:'5100', name:'تكلفة البضاعة المباعة', type:'فرعي', level:3, balance:1100000},
+    {code:'5200', name:'مصروفات الرواتب', type:'فرعي', level:3, balance:280000},
+    {code:'5300', name:'مصروفات إيجار', type:'فرعي', level:3, balance:120000},
+  ],
+  journals: [
+    {id:'QD-2025-001', date:'2025-01-15', desc:'فاتورة مبيعات رقم 1001', debit:45000, credit:45000, status:'مرحّل', type:'مبيعات'},
+    {id:'QD-2025-002', date:'2025-01-18', desc:'استلام بضائع من مورد', debit:28000, credit:28000, status:'مرحّل', type:'مشتريات'},
+    {id:'QD-2025-003', date:'2025-01-22', desc:'صرف رواتب يناير', debit:62000, credit:62000, status:'مرحّل', type:'رواتب'},
+    {id:'QD-2025-004', date:'2025-01-28', desc:'تحصيل من عميل', debit:30000, credit:30000, status:'معلق', type:'تحصيل'},
+  ],
+  treasuries: [
+    {id:1, name:'الصندوق الرئيسي', type:'صندوق', balance:125000, currency:'ر.س', branch:'الرئيسي'},
+    {id:2, name:'البنك الأهلي - جاري', type:'بنك', balance:450000, currency:'ر.س', branch:'الرئيسي'},
+    {id:3, name:'البنك العربي - توفير', type:'بنك', balance:275000, currency:'ر.س', branch:'الفرع 1'},
+  ],
+  items: [
+    {code:'ITM-001', name:'لابتوب ديل', category:'إلكترونيات', unit:'قطعة', price:3200, cost:2400, qty:45, minQty:10, barcode:'8901234567890'},
+    {code:'ITM-002', name:'طابعة HP', category:'إلكترونيات', unit:'قطعة', price:850, cost:620, qty:8, minQty:15, barcode:'8901234567891'},
+    {code:'ITM-003', name:'كرسي مكتبي', category:'أثاث', unit:'قطعة', price:450, cost:310, qty:62, minQty:20, barcode:'8901234567892'},
+    {code:'ITM-004', name:'شاشة سامسونج', category:'إلكترونيات', unit:'قطعة', price:1200, cost:890, qty:5, minQty:10, barcode:'8901234567893'},
+    {code:'ITM-005', name:'ورق A4', category:'مكتبية', unit:'رزمة', price:28, cost:18, qty:250, minQty:50, barcode:'8901234567894'},
+  ],
+  sales: [
+    {id:'INV-2025-001', date:'2025-01-10', customer:'شركة النور', amount:45000, vat:6750, total:51750, status:'مدفوعة', items:3},
+    {id:'INV-2025-002', date:'2025-01-15', customer:'مؤسسة الأمل', amount:28500, vat:4275, total:32775, status:'معلقة', items:5},
+    {id:'INV-2025-003', date:'2025-01-20', customer:'تجارة الخليج', amount:67200, vat:10080, total:77280, status:'مدفوعة', items:8},
+    {id:'INV-2025-004', date:'2025-01-25', customer:'شركة البدر', amount:15000, vat:2250, total:17250, status:'متأخرة', items:2},
+  ],
+  purchases: [
+    {id:'PO-2025-001', date:'2025-01-08', supplier:'مورد التقنية', amount:85000, status:'مستلم', vat:12750},
+    {id:'PO-2025-002', date:'2025-01-14', supplier:'الموردون المتحدون', amount:32000, status:'معلق اعتماد', vat:4800},
+    {id:'PO-2025-003', date:'2025-01-19', supplier:'سامسونج العربية', amount:54000, status:'جزئي', vat:8100},
+  ],
+  employees: [
+    {id:'EMP-001', name:'محمد علي', dept:'المالية', position:'محاسب أول', salary:8500, status:'نشط', join:'2022-03-01', phone:'0501234567'},
+    {id:'EMP-002', name:'فاطمة أحمد', dept:'المبيعات', position:'مدير مبيعات', salary:12000, status:'نشط', join:'2021-06-15', phone:'0507654321'},
+    {id:'EMP-003', name:'خالد السعد', dept:'المستودعات', position:'أمين مستودع', salary:6500, status:'نشط', join:'2023-01-10', phone:'0512345678'},
+    {id:'EMP-004', name:'نورة المنصور', dept:'الموارد البشرية', position:'مسؤولة HR', salary:9000, status:'إجازة', join:'2020-09-20', phone:'0519876543'},
+  ],
+  customers: [
+    {id:'CUS-001', name:'شركة النور التجارية', phone:'0112345678', city:'الرياض', balance:51750, credit:100000, status:'نشط'},
+    {id:'CUS-002', name:'مؤسسة الأمل', phone:'0123456789', city:'جدة', balance:32775, credit:80000, status:'نشط'},
+    {id:'CUS-003', name:'تجارة الخليج', phone:'0113334444', city:'الدمام', balance:0, credit:150000, status:'نشط'},
+    {id:'CUS-004', name:'شركة البدر', phone:'0555667788', city:'الرياض', balance:17250, credit:50000, status:'موقوف'},
+  ],
+  suppliers: [
+    {id:'SUP-001', name:'مورد التقنية المتقدمة', phone:'0121234567', city:'الرياض', balance:85000, status:'نشط'},
+    {id:'SUP-002', name:'الموردون المتحدون', phone:'0129876543', city:'جدة', balance:32000, status:'نشط'},
+    {id:'SUP-003', name:'سامسونج العربية', phone:'0554443322', city:'الرياض', balance:54000, status:'نشط'},
+  ],
+  fixedAssets: [
+    {id:'FA-001', name:'سيارة تويوتا هايلاكس', category:'مركبات', cost:120000, deprRate:20, accumulated:24000, bookValue:96000, date:'2024-01-01'},
+    {id:'FA-002', name:'معدات المستودع', category:'معدات', cost:80000, deprRate:15, accumulated:12000, bookValue:68000, date:'2024-06-01'},
+    {id:'FA-003', name:'أجهزة الحاسب', category:'أجهزة', cost:50000, deprRate:33, accumulated:16500, bookValue:33500, date:'2023-09-01'},
+  ],
+  approvals: [
+    {id:'APV-001', type:'طلب شراء', desc:'شراء 20 لابتوب', amount:64000, by:'خالد السعد', status:'معلق', date:'2025-01-28'},
+    {id:'APV-002', type:'صرف مصروف', desc:'مصاريف سفر', amount:5000, by:'فاطمة أحمد', status:'معلق', date:'2025-01-27'},
+    {id:'APV-003', type:'إجازة سنوية', desc:'إجازة 10 أيام', amount:0, by:'محمد علي', status:'معلق', date:'2025-01-26'},
+    {id:'APV-004', type:'سلفة راتب', desc:'سلفة 3000 ر.س', amount:3000, by:'نورة المنصور', status:'معلق', date:'2025-01-25'},
+    {id:'APV-005', type:'أمر شراء', desc:'استيراد معدات مكتبية', amount:28000, by:'محمد علي', status:'معلق', date:'2025-01-24'},
+  ],
+  branches: [
+    {id:'BR-001', name:'الفرع الرئيسي - الرياض', manager:'فاطمة أحمد', city:'الرياض', sales:850000, status:'نشط'},
+    {id:'BR-002', name:'فرع جدة', manager:'محمد علي', city:'جدة', sales:420000, status:'نشط'},
+    {id:'BR-003', name:'فرع الدمام', manager:'خالد السعد', city:'الدمام', sales:280000, status:'نشط'},
+  ]
+};
+
+let currentPage = 'dashboard';
+let auditLog = [];
+
+function logAudit(action, detail) {
+  const now = new Date();
+  auditLog.unshift({time: now.toLocaleString('ar-SA'), action, detail, user:'admin'});
+}
+
+// ===================== LOGIN =====================
+function doLogin() {
+  const u = document.getElementById('login-user').value;
+  const p = document.getElementById('login-pass').value;
+  const found = DB.users.find(x => x.username === u && x.password === p);
+  if (found) {
+    document.getElementById('login-screen').style.display = 'none';
+    logAudit('تسجيل دخول', 'دخل ' + found.name + ' إلى النظام');
+    showPage('dashboard', null);
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+// ===================== NAVIGATION =====================
+function showPage(page, el) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = {
+    dashboard:'لوحة التحكم', accounts:'شجرة الحسابات', journal:'القيود اليومية',
+    treasury:'الصندوق والبنوك', 'financial-reports':'التقارير المالية',
+    sales:'إدارة المبيعات', purchases:'إدارة المشتريات', inventory:'إدارة المخازن',
+    employees:'الموظفون', payroll:'مسير الرواتب', attendance:'الحضور والإجازات',
+    customers:'إدارة العملاء', suppliers:'إدارة الموردين', 'fixed-assets':'الأصول الثابتة',
+    branches:'إدارة الفروع', approvals:'الموافقات والاعتمادات', settings:'الإعدادات', users:'إدارة المستخدمين'
+  };
+  document.getElementById('topbar-title').textContent = titles[page] || page;
+  const fn = pages[page];
+  document.getElementById('content').innerHTML = fn ? fn() : '<div class="card"><div class="card-body">قيد الإنشاء...</div></div>';
+}
+
+// ===================== PAGES =====================
+const pages = {};
+
+// DASHBOARD
+pages.dashboard = () => `
+<div class="page-header">
+  <div>
+    <div class="page-title">لوحة التحكم الرئيسية</div>
+    <div class="page-subtitle">مرحباً، آخر تحديث: ${new Date().toLocaleDateString('ar-SA')}</div>
+  </div>
+  <div class="d-flex gap-8">
+    <select class="form-control" style="width:140px">
+      <option>يناير 2025</option><option>فبراير 2025</option>
+    </select>
+  </div>
+</div>
+
+<!-- Alerts -->
+<div class="alert alert-warning">⚠️ 3 أصناف وصلت لحد إعادة الطلب — <a href="#" onclick="showPage('inventory',null);return false;">عرض المخزون</a></div>
+<div class="alert alert-info">📋 5 طلبات تنتظر موافقتك — <a href="#" onclick="showPage('approvals',null);return false;">عرض الطلبات</a></div>
+
+<!-- KPIs -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">المبيعات الشهرية</div>
+    <div class="stat-value">1.85م</div>
+    <div class="stat-change up">▲ 12% مقارنة بالشهر الماضي</div>
+    <div class="stat-icon" style="background:#e0f2fe;color:#0284c7">🛒</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">إجمالي المصروفات</div>
+    <div class="stat-value">1.50م</div>
+    <div class="stat-change down">▼ 3% مقارنة بالشهر الماضي</div>
+    <div class="stat-icon" style="background:#fef3c7;color:#d97706">💸</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">صافي الربح</div>
+    <div class="stat-value">350ك</div>
+    <div class="stat-change up">▲ 8% نمو</div>
+    <div class="stat-icon" style="background:#dcfce7;color:#16a34a">📈</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">إجمالي النقدية</div>
+    <div class="stat-value">850ك</div>
+    <div class="stat-change up">▲ 5% هذا الشهر</div>
+    <div class="stat-icon" style="background:#f3e8ff;color:#9333ea">🏦</div>
+  </div>
+</div>
+
+<div class="two-col">
+  <!-- Sales Chart -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📊 المبيعات الشهرية (ألف ر.س)</span>
+    </div>
+    <div class="card-body">
+      <div class="chart-bar-container">
+        ${['يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر','يناير'].map((m,i) => {
+          const vals = [120,145,130,165,155,180,185];
+          const h = (vals[i]/200)*100;
+          return `<div class="chart-bar" style="height:${h}%"><div class="bar-val">${vals[i]}</div><div class="bar-label">${m}</div></div>`;
+        }).join('')}
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">⚡ ملخص سريع</span></div>
+    <div class="card-body" style="padding:0">
+      <table>
+        <tr><td>📦 عدد الأصناف</td><td class="fw-600 text-success" style="text-align:left">${DB.items.length} صنف</td></tr>
+        <tr><td>👥 الموظفون النشطون</td><td class="fw-600" style="text-align:left">${DB.employees.filter(e=>e.status==='نشط').length} موظف</td></tr>
+        <tr><td>🤝 العملاء النشطون</td><td class="fw-600" style="text-align:left">${DB.customers.filter(c=>c.status==='نشط').length} عميل</td></tr>
+        <tr><td>🏭 الموردون</td><td class="fw-600" style="text-align:left">${DB.suppliers.length} مورد</td></tr>
+        <tr><td>🏢 الفروع</td><td class="fw-600" style="text-align:left">${DB.branches.length} فروع</td></tr>
+        <tr><td>✅ طلبات موافقة معلقة</td><td class="fw-600 text-warning" style="text-align:left">${DB.approvals.filter(a=>a.status==='معلق').length} طلبات</td></tr>
+        <tr><td>💰 أرصدة البنوك والصناديق</td><td class="fw-600 text-success" style="text-align:left">850,000 ر.س</td></tr>
+        <tr><td>📋 فواتير معلقة التحصيل</td><td class="fw-600 text-danger" style="text-align:left">49,000 ر.س</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="two-col">
+  <!-- Recent Sales -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🧾 آخر الفواتير</span>
+      <button class="btn btn-outline btn-sm" onclick="showPage('sales',null)">عرض الكل</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <table>
+        <thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+        <tbody>
+          ${DB.sales.slice(0,4).map(s=>`
+            <tr>
+              <td><span class="fw-600">${s.id}</span></td>
+              <td>${s.customer}</td>
+              <td class="fw-600">${s.total.toLocaleString()} ر.س</td>
+              <td><span class="badge ${s.status==='مدفوعة'?'badge-success':s.status==='متأخرة'?'badge-danger':'badge-warning'}">${s.status}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Low Stock Alerts -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚠️ تنبيهات المخزون</span>
+      <button class="btn btn-outline btn-sm" onclick="showPage('inventory',null)">عرض الكل</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <table>
+        <thead><tr><th>الصنف</th><th>الرصيد</th><th>حد الطلب</th><th>الحالة</th></tr></thead>
+        <tbody>
+          ${DB.items.filter(i=>i.qty<=i.minQty).concat(DB.items.filter(i=>i.qty>i.minQty)).slice(0,5).map(i=>`
+            <tr>
+              <td>${i.name}</td>
+              <td class="fw-600 ${i.qty<=i.minQty?'text-danger':''}">${i.qty}</td>
+              <td class="text-muted">${i.minQty}</td>
+              <td><span class="badge ${i.qty<=i.minQty?'badge-danger':'badge-success'}">${i.qty<=i.minQty?'منخفض':'طبيعي'}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+`;
+
+// ACCOUNTS (Chart of Accounts)
+pages.accounts = () => `
+<div class="page-header">
+  <div><div class="page-title">شجرة الحسابات</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openAddAccount()">+ إضافة حساب</button>
+    <button class="btn btn-outline">⬇️ تصدير</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>كود الحساب</th><th>اسم الحساب</th><th>النوع</th><th>المستوى</th><th>الرصيد</th><th>الإجراءات</th></tr></thead>
+      <tbody>
+        ${DB.accounts.map(a=>`
+          <tr style="${a.level===1?'background:#f0f7ff;font-weight:600':''}">
+            <td><span style="font-family:monospace;color:var(--primary)">${a.code}</span></td>
+            <td style="padding-right:${(a.level-1)*20}px">${a.level>1?'└─ ':''}${a.name}</td>
+            <td><span class="badge ${a.type==='رئيسي'?'badge-info':'badge-gray'}">${a.type}</span></td>
+            <td>المستوى ${a.level}</td>
+            <td class="fw-600 ${a.balance>0?'text-success':a.balance<0?'text-danger':''}">${a.balance!==0?a.balance.toLocaleString()+' ر.س':'—'}</td>
+            <td><button class="btn btn-outline btn-sm">✏️</button> <button class="btn btn-outline btn-sm">📋 كشف</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// JOURNAL
+pages.journal = () => `
+<div class="page-header">
+  <div><div class="page-title">القيود اليومية</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openAddJournal()">+ قيد جديد</button>
+    <button class="btn btn-outline">ترحيل الكل</button>
+    <button class="btn btn-outline">⬇️ تصدير</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>رقم القيد</th><th>التاريخ</th><th>البيان</th><th>مدين</th><th>دائن</th><th>النوع</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.journals.map(j=>`
+          <tr>
+            <td class="fw-600" style="color:var(--primary)">${j.id}</td>
+            <td>${j.date}</td>
+            <td>${j.desc}</td>
+            <td class="fw-600 text-danger">${j.debit.toLocaleString()} ر.س</td>
+            <td class="fw-600 text-success">${j.credit.toLocaleString()} ر.س</td>
+            <td><span class="badge badge-info">${j.type}</span></td>
+            <td><span class="badge ${j.status==='مرحّل'?'badge-success':'badge-warning'}">${j.status}</span></td>
+            <td><button class="btn btn-outline btn-sm">👁️</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// TREASURY
+pages.treasury = () => `
+<div class="page-header">
+  <div><div class="page-title">الصندوق والبنوك</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openReceipt()">+ إذن قبض</button>
+    <button class="btn btn-accent" onclick="openPayment()">+ إذن صرف</button>
+    <button class="btn btn-outline">↔️ تحويل</button>
+  </div>
+</div>
+
+<div class="stats-grid">
+  ${DB.treasuries.map(t=>`
+    <div class="stat-card">
+      <div class="stat-label">${t.type==='بنك'?'🏦':'💵'} ${t.name}</div>
+      <div class="stat-value" style="font-size:20px">${t.balance.toLocaleString()}</div>
+      <div class="stat-change">${t.currency} — ${t.branch}</div>
+    </div>
+  `).join('')}
+  <div class="stat-card">
+    <div class="stat-label">إجمالي النقدية</div>
+    <div class="stat-value" style="font-size:20px">${DB.treasuries.reduce((s,t)=>s+t.balance,0).toLocaleString()}</div>
+    <div class="stat-change up">▲ الرصيد الكلي</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><span class="card-title">حركات الصندوق والبنوك</span></div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>التاريخ</th><th>الحساب</th><th>البيان</th><th>قبض</th><th>صرف</th><th>الرصيد</th><th>الحالة</th></tr></thead>
+      <tbody>
+        <tr><td>2025-01-28</td><td>الصندوق الرئيسي</td><td>تحصيل من شركة النور</td><td class="text-success fw-600">30,000</td><td>—</td><td>125,000</td><td><span class="badge badge-success">مكتمل</span></td></tr>
+        <tr><td>2025-01-25</td><td>البنك الأهلي</td><td>دفع فاتورة مورد</td><td>—</td><td class="text-danger fw-600">85,000</td><td>450,000</td><td><span class="badge badge-success">مكتمل</span></td></tr>
+        <tr><td>2025-01-22</td><td>الصندوق الرئيسي</td><td>صرف رواتب</td><td>—</td><td class="text-danger fw-600">62,000</td><td>95,000</td><td><span class="badge badge-success">مكتمل</span></td></tr>
+        <tr><td>2025-01-18</td><td>البنك الأهلي</td><td>تحويل داخلي</td><td class="text-success fw-600">50,000</td><td>—</td><td>535,000</td><td><span class="badge badge-success">مكتمل</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// FINANCIAL REPORTS
+pages['financial-reports'] = () => `
+<div class="page-header">
+  <div><div class="page-title">التقارير المالية</div></div>
+  <div class="d-flex gap-8">
+    <select class="form-control" style="width:160px"><option>يناير 2025</option></select>
+    <button class="btn btn-outline">🖨️ طباعة</button>
+    <button class="btn btn-outline">⬇️ PDF</button>
+  </div>
+</div>
+
+<div class="three-col" style="margin-bottom:20px">
+  <div class="card" style="cursor:pointer" onclick="showTrialBalance()">
+    <div class="card-body" style="text-align:center;padding:24px">
+      <div style="font-size:36px;margin-bottom:8px">📊</div>
+      <div class="card-title">ميزان المراجعة</div>
+      <div class="text-muted" style="font-size:12px;margin-top:4px">إجمالي وتفصيلي</div>
+    </div>
+  </div>
+  <div class="card" style="cursor:pointer">
+    <div class="card-body" style="text-align:center;padding:24px">
+      <div style="font-size:36px;margin-bottom:8px">📈</div>
+      <div class="card-title">قائمة الدخل</div>
+      <div class="text-muted" style="font-size:12px;margin-top:4px">الأرباح والخسائر</div>
+    </div>
+  </div>
+  <div class="card" style="cursor:pointer">
+    <div class="card-body" style="text-align:center;padding:24px">
+      <div style="font-size:36px;margin-bottom:8px">🏛️</div>
+      <div class="card-title">الميزانية العمومية</div>
+      <div class="text-muted" style="font-size:12px;margin-top:4px">المركز المالي</div>
+    </div>
+  </div>
+</div>
+
+<!-- Income Statement Preview -->
+<div class="card">
+  <div class="card-header"><span class="card-title">📈 قائمة الدخل — يناير 2025</span></div>
+  <div class="card-body">
+    <div class="two-col">
+      <div>
+        <div style="font-weight:600;color:var(--primary);margin-bottom:12px;font-size:13px">الإيرادات</div>
+        <table><tbody>
+          <tr><td>إيرادات المبيعات</td><td class="text-success fw-600" style="text-align:left">1,850,000</td></tr>
+          <tr><td>إيرادات أخرى</td><td class="text-success fw-600" style="text-align:left">25,000</td></tr>
+          <tr style="border-top:2px solid var(--border)"><td class="fw-600">إجمالي الإيرادات</td><td class="text-success fw-600" style="text-align:left;font-size:15px">1,875,000</td></tr>
+        </tbody></table>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--primary);margin-bottom:12px;font-size:13px">المصروفات</div>
+        <table><tbody>
+          <tr><td>تكلفة البضاعة المباعة</td><td class="text-danger fw-600" style="text-align:left">1,100,000</td></tr>
+          <tr><td>مصروفات الرواتب</td><td class="text-danger fw-600" style="text-align:left">280,000</td></tr>
+          <tr><td>مصروفات الإيجار</td><td class="text-danger fw-600" style="text-align:left">120,000</td></tr>
+          <tr><td>مصروفات أخرى</td><td class="text-danger fw-600" style="text-align:left">25,000</td></tr>
+          <tr style="border-top:2px solid var(--border)"><td class="fw-600">إجمالي المصروفات</td><td class="text-danger fw-600" style="text-align:left;font-size:15px">1,525,000</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <hr class="divider">
+    <div style="text-align:center;padding:16px;background:var(--success-bg);border-radius:var(--radius);margin-top:12px">
+      <div style="font-size:12px;color:var(--text-muted)">صافي الربح</div>
+      <div style="font-size:28px;font-weight:700;color:var(--success)">350,000 ر.س</div>
+      <div style="font-size:12px;color:var(--success)">نسبة الربحية: 18.7%</div>
+    </div>
+  </div>
+</div>
+`;
+
+// SALES
+pages.sales = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة المبيعات</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openNewInvoice()">+ فاتورة جديدة</button>
+    <button class="btn btn-outline">عرض أسعار</button>
+    <button class="btn btn-outline">مردود مبيعات</button>
+    <button class="btn btn-outline">⬇️ تصدير</button>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">إجمالي المبيعات</div>
+    <div class="stat-value">${DB.sales.reduce((s,i)=>s+i.total,0).toLocaleString()}</div>
+    <div class="stat-change">ر.س هذا الشهر</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">الفواتير المدفوعة</div>
+    <div class="stat-value text-success">${DB.sales.filter(s=>s.status==='مدفوعة').length}</div>
+    <div class="stat-change up">فاتورة محصّلة</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">الفواتير المعلقة</div>
+    <div class="stat-value text-warning">${DB.sales.filter(s=>s.status==='معلقة').length}</div>
+    <div class="stat-change">فاتورة في الانتظار</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">الفواتير المتأخرة</div>
+    <div class="stat-value text-danger">${DB.sales.filter(s=>s.status==='متأخرة').length}</div>
+    <div class="stat-change down">تحتاج متابعة</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">قائمة الفواتير</span>
+    <div class="d-flex gap-8">
+      <input type="text" class="form-control" placeholder="بحث..." style="width:200px">
+      <select class="form-control" style="width:140px"><option>جميع الحالات</option></select>
+    </div>
+  </div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>العميل</th><th>عدد الأصناف</th><th>المبلغ</th><th>الضريبة 15%</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+      <tbody>
+        ${DB.sales.map(s=>`
+          <tr>
+            <td class="fw-600" style="color:var(--primary)">${s.id}</td>
+            <td>${s.date}</td>
+            <td>${s.customer}</td>
+            <td style="text-align:center">${s.items}</td>
+            <td>${s.amount.toLocaleString()}</td>
+            <td>${s.vat.toLocaleString()}</td>
+            <td class="fw-600">${s.total.toLocaleString()} ر.س</td>
+            <td><span class="badge ${s.status==='مدفوعة'?'badge-success':s.status==='متأخرة'?'badge-danger':'badge-warning'}">${s.status}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="viewInvoice('${s.id}')">👁️</button>
+              <button class="btn btn-outline btn-sm">🖨️</button>
+              ${s.status!=='مدفوعة'?'<button class="btn btn-sm" style="background:var(--success-bg);color:var(--success)">تحصيل</button>':''}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// PURCHASES
+pages.purchases = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة المشتريات</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openNewPurchase()">+ أمر شراء</button>
+    <button class="btn btn-outline">طلب شراء</button>
+    <button class="btn btn-outline">مردود مشتريات</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><span class="card-title">أوامر الشراء</span></div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>رقم الأمر</th><th>التاريخ</th><th>المورد</th><th>المبلغ</th><th>الضريبة</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+      <tbody>
+        ${DB.purchases.map(p=>`
+          <tr>
+            <td class="fw-600" style="color:var(--primary)">${p.id}</td>
+            <td>${p.date}</td>
+            <td>${p.supplier}</td>
+            <td>${p.amount.toLocaleString()}</td>
+            <td>${p.vat.toLocaleString()}</td>
+            <td class="fw-600">${(p.amount+p.vat).toLocaleString()} ر.س</td>
+            <td><span class="badge ${p.status==='مستلم'?'badge-success':p.status==='جزئي'?'badge-warning':'badge-info'}">${p.status}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm">👁️</button>
+              ${p.status!=='مستلم'?'<button class="btn btn-sm" style="background:var(--info-bg);color:var(--info)">استلام</button>':''}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// INVENTORY
+pages.inventory = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة المخازن</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openAddItem()">+ صنف جديد</button>
+    <button class="btn btn-outline">إذن إضافة</button>
+    <button class="btn btn-outline">إذن صرف</button>
+    <button class="btn btn-outline">جرد المخزون</button>
+  </div>
+</div>
+
+${DB.items.filter(i=>i.qty<=i.minQty).length>0?`<div class="alert alert-warning">⚠️ ${DB.items.filter(i=>i.qty<=i.minQty).length} أصناف وصلت لحد إعادة الطلب — يُنصح بإصدار أمر شراء</div>`:''}
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">الأصناف والمخزون</span>
+    <div class="d-flex gap-8">
+      <input type="text" class="form-control" placeholder="بحث بالاسم أو الكود..." style="width:220px">
+      <select class="form-control" style="width:140px"><option>جميع الفئات</option><option>إلكترونيات</option><option>أثاث</option><option>مكتبية</option></select>
+    </div>
+  </div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>الكود</th><th>اسم الصنف</th><th>الفئة</th><th>الوحدة</th><th>سعر التكلفة</th><th>سعر البيع</th><th>الرصيد</th><th>حد الطلب</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.items.map(i=>`
+          <tr>
+            <td style="font-family:monospace;color:var(--primary)">${i.code}</td>
+            <td class="fw-600">${i.name}</td>
+            <td><span class="badge badge-gray">${i.category}</span></td>
+            <td>${i.unit}</td>
+            <td>${i.cost.toLocaleString()}</td>
+            <td class="fw-600">${i.price.toLocaleString()}</td>
+            <td class="fw-600 ${i.qty<=i.minQty?'text-danger':'text-success'}">${i.qty}</td>
+            <td class="text-muted">${i.minQty}</td>
+            <td><span class="badge ${i.qty<=i.minQty?'badge-danger':'badge-success'}">${i.qty<=i.minQty?'منخفض':'طبيعي'}</span></td>
+            <td><button class="btn btn-outline btn-sm">✏️</button> <button class="btn btn-outline btn-sm">📊</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// EMPLOYEES
+pages.employees = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة الموظفين</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openAddEmployee()">+ موظف جديد</button>
+    <button class="btn btn-outline">⬇️ تصدير</button>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-label">إجمالي الموظفين</div><div class="stat-value">${DB.employees.length}</div></div>
+  <div class="stat-card"><div class="stat-label">موظفون نشطون</div><div class="stat-value text-success">${DB.employees.filter(e=>e.status==='نشط').length}</div></div>
+  <div class="stat-card"><div class="stat-label">في إجازة</div><div class="stat-value text-warning">${DB.employees.filter(e=>e.status==='إجازة').length}</div></div>
+  <div class="stat-card"><div class="stat-label">إجمالي الرواتب</div><div class="stat-value">${DB.employees.reduce((s,e)=>s+e.salary,0).toLocaleString()}</div></div>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>رقم الموظف</th><th>الاسم</th><th>القسم</th><th>الوظيفة</th><th>الراتب</th><th>تاريخ التعيين</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.employees.map(e=>`
+          <tr>
+            <td style="font-family:monospace;color:var(--primary)">${e.id}</td>
+            <td class="fw-600">${e.name}</td>
+            <td>${e.dept}</td>
+            <td>${e.position}</td>
+            <td class="fw-600">${e.salary.toLocaleString()} ر.س</td>
+            <td>${e.join}</td>
+            <td><span class="badge ${e.status==='نشط'?'badge-success':'badge-warning'}">${e.status}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm">👁️ ملف</button>
+              <button class="btn btn-outline btn-sm">✏️</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// PAYROLL
+pages.payroll = () => `
+<div class="page-header">
+  <div><div class="page-title">مسير الرواتب</div></div>
+  <div class="d-flex gap-8">
+    <select class="form-control" style="width:160px"><option>يناير 2025</option></select>
+    <button class="btn btn-primary">إنشاء مسير الرواتب</button>
+    <button class="btn btn-accent">✅ اعتماد ودفع</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><span class="card-title">كشف الرواتب — يناير 2025</span></div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>الموظف</th><th>الراتب الأساسي</th><th>البدلات</th><th>الإضافي</th><th>السلف</th><th>الخصومات</th><th>صافي الراتب</th><th>الحالة</th></tr></thead>
+      <tbody>
+        ${DB.employees.map(e=>{
+          const allowances = Math.round(e.salary*0.2);
+          const deductions = Math.round(e.salary*0.05);
+          const net = e.salary + allowances - deductions;
+          return `
+            <tr>
+              <td class="fw-600">${e.name}</td>
+              <td>${e.salary.toLocaleString()}</td>
+              <td class="text-success">${allowances.toLocaleString()}</td>
+              <td>—</td>
+              <td>—</td>
+              <td class="text-danger">${deductions.toLocaleString()}</td>
+              <td class="fw-600">${net.toLocaleString()} ر.س</td>
+              <td><span class="badge badge-warning">معلق</span></td>
+            </tr>
+          `;
+        }).join('')}
+        <tr style="background:#f0f7ff;font-weight:600">
+          <td>الإجمالي</td>
+          <td>${DB.employees.reduce((s,e)=>s+e.salary,0).toLocaleString()}</td>
+          <td class="text-success">${Math.round(DB.employees.reduce((s,e)=>s+e.salary,0)*0.2).toLocaleString()}</td>
+          <td>—</td>
+          <td>—</td>
+          <td class="text-danger">${Math.round(DB.employees.reduce((s,e)=>s+e.salary,0)*0.05).toLocaleString()}</td>
+          <td style="color:var(--primary)">${Math.round(DB.employees.reduce((s,e)=>s+e.salary*1.15,0)).toLocaleString()} ر.س</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// ATTENDANCE
+pages.attendance = () => `
+<div class="page-header">
+  <div><div class="page-title">الحضور والإجازات</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary">+ تسجيل حضور</button>
+    <button class="btn btn-outline">طلب إجازة</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><span class="card-title">سجل الحضور — ${new Date().toLocaleDateString('ar-SA')}</span></div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>ساعات العمل</th><th>التأخير</th><th>الحالة</th></tr></thead>
+      <tbody>
+        ${DB.employees.map((e,i)=>{
+          const hours = [8.5,9,0,8][i];
+          const late = [0,15,0,0][i];
+          const status = ['حضر','حضر','غياب','حضر'][i];
+          return `
+            <tr>
+              <td class="fw-600">${e.name}</td>
+              <td>${hours>0?'08:00':' —'}</td>
+              <td>${hours>0?'0'+(8+Math.floor(hours)).toString().slice(-2)+':30':' —'}</td>
+              <td>${hours>0?hours+' ساعة':'—'}</td>
+              <td class="${late>0?'text-warning':''}">${late>0?late+' دقيقة':'—'}</td>
+              <td><span class="badge ${status==='حضر'?'badge-success':status==='غياب'?'badge-danger':'badge-warning'}">${status}</span></td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// CUSTOMERS
+pages.customers = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة العملاء</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openAddCustomer()">+ عميل جديد</button>
+    <button class="btn btn-outline">أعمار الديون</button>
+    <button class="btn btn-outline">⬇️ تصدير</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>كود العميل</th><th>اسم العميل</th><th>الهاتف</th><th>المدينة</th><th>الرصيد المديون</th><th>حد الائتمان</th><th>نسبة الاستخدام</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.customers.map(c=>`
+          <tr>
+            <td style="font-family:monospace;color:var(--primary)">${c.id}</td>
+            <td class="fw-600">${c.name}</td>
+            <td dir="ltr">${c.phone}</td>
+            <td>${c.city}</td>
+            <td class="fw-600 ${c.balance>0?'text-danger':''}">${c.balance.toLocaleString()} ر.س</td>
+            <td>${c.credit.toLocaleString()} ر.س</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="progress" style="width:80px"><div class="progress-bar" style="width:${Math.round(c.balance/c.credit*100)}%;background:${c.balance/c.credit>0.8?'var(--danger)':'var(--primary)'}"></div></div>
+                <span style="font-size:11px">${Math.round(c.balance/c.credit*100)}%</span>
+              </div>
+            </td>
+            <td><span class="badge ${c.status==='نشط'?'badge-success':'badge-danger'}">${c.status}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm">📋 كشف</button>
+              <button class="btn btn-outline btn-sm">✏️</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// SUPPLIERS
+pages.suppliers = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة الموردين</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary">+ مورد جديد</button>
+    <button class="btn btn-outline">أعمار الديون</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>كود المورد</th><th>اسم المورد</th><th>الهاتف</th><th>المدينة</th><th>الرصيد المستحق</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.suppliers.map(s=>`
+          <tr>
+            <td style="font-family:monospace;color:var(--primary)">${s.id}</td>
+            <td class="fw-600">${s.name}</td>
+            <td dir="ltr">${s.phone}</td>
+            <td>${s.city}</td>
+            <td class="fw-600 text-danger">${s.balance.toLocaleString()} ر.س</td>
+            <td><span class="badge ${s.status==='نشط'?'badge-success':'badge-warning'}">${s.status}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm">📋 كشف</button>
+              <button class="btn btn-outline btn-sm">💸 دفع</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// FIXED ASSETS
+pages['fixed-assets'] = () => `
+<div class="page-header">
+  <div><div class="page-title">الأصول الثابتة</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary">+ أصل جديد</button>
+    <button class="btn btn-outline">احتساب الإهلاك</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>كود الأصل</th><th>اسم الأصل</th><th>الفئة</th><th>التكلفة</th><th>نسبة الإهلاك</th><th>مجمع الإهلاك</th><th>القيمة الدفترية</th><th>تاريخ الشراء</th></tr></thead>
+      <tbody>
+        ${DB.fixedAssets.map(a=>`
+          <tr>
+            <td style="font-family:monospace;color:var(--primary)">${a.id}</td>
+            <td class="fw-600">${a.name}</td>
+            <td><span class="badge badge-info">${a.category}</span></td>
+            <td>${a.cost.toLocaleString()}</td>
+            <td>${a.deprRate}%</td>
+            <td class="text-danger">(${a.accumulated.toLocaleString()})</td>
+            <td class="fw-600 text-success">${a.bookValue.toLocaleString()} ر.س</td>
+            <td>${a.date}</td>
+          </tr>
+        `).join('')}
+        <tr style="background:#f0f7ff;font-weight:600">
+          <td colspan="3">الإجمالي</td>
+          <td>${DB.fixedAssets.reduce((s,a)=>s+a.cost,0).toLocaleString()}</td>
+          <td></td>
+          <td class="text-danger">(${DB.fixedAssets.reduce((s,a)=>s+a.accumulated,0).toLocaleString()})</td>
+          <td class="text-success">${DB.fixedAssets.reduce((s,a)=>s+a.bookValue,0).toLocaleString()} ر.س</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// BRANCHES
+pages.branches = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة الفروع</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary">+ فرع جديد</button>
+  </div>
+</div>
+<div class="three-col">
+  ${DB.branches.map(b=>`
+    <div class="card">
+      <div class="card-header"><span class="card-title">🏢 ${b.name}</span><span class="badge ${b.status==='نشط'?'badge-success':'badge-gray'}">${b.status}</span></div>
+      <div class="card-body">
+        <div style="margin-bottom:12px"><span class="text-muted">المدير: </span><span class="fw-600">${b.manager}</span></div>
+        <div style="margin-bottom:12px"><span class="text-muted">المدينة: </span>${b.city}</div>
+        <div style="margin-bottom:12px"><span class="text-muted">المبيعات: </span><span class="fw-600 text-success">${b.sales.toLocaleString()} ر.س</span></div>
+        <div class="progress" style="margin-top:8px"><div class="progress-bar" style="width:${Math.round(b.sales/DB.branches.reduce((s,x)=>s+x.sales,0)*100)}%"></div></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${Math.round(b.sales/DB.branches.reduce((s,x)=>s+x.sales,0)*100)}% من إجمالي المبيعات</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm">📊 تقارير</button>
+          <button class="btn btn-outline btn-sm">✏️ تعديل</button>
+        </div>
+      </div>
+    </div>
+  `).join('')}
+</div>
+`;
+
+// APPROVALS
+pages.approvals = () => `
+<div class="page-header">
+  <div><div class="page-title">الموافقات والاعتمادات</div></div>
+</div>
+${DB.approvals.filter(a=>a.status==='معلق').length>0?`<div class="alert alert-warning">⚠️ لديك ${DB.approvals.filter(a=>a.status==='معلق').length} طلبات تنتظر موافقتك</div>`:''}
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>رقم الطلب</th><th>النوع</th><th>البيان</th><th>المبلغ</th><th>مقدم الطلب</th><th>التاريخ</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.approvals.map(a=>`
+          <tr>
+            <td class="fw-600" style="color:var(--primary)">${a.id}</td>
+            <td><span class="badge badge-info">${a.type}</span></td>
+            <td>${a.desc}</td>
+            <td>${a.amount>0?a.amount.toLocaleString()+' ر.س':'—'}</td>
+            <td>${a.by}</td>
+            <td>${a.date}</td>
+            <td><span class="badge ${a.status==='معلق'?'badge-warning':'badge-success'}">${a.status}</span></td>
+            <td>
+              ${a.status==='معلق'?`
+                <button class="btn btn-sm" style="background:var(--success-bg);color:var(--success)" onclick="approveItem('${a.id}')">✅ اعتماد</button>
+                <button class="btn btn-sm" style="background:var(--danger-bg);color:var(--danger)" onclick="rejectItem('${a.id}')">❌ رفض</button>
+              `:'<span class="text-success">✅ تم الاعتماد</span>'}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// USERS
+pages.users = () => `
+<div class="page-header">
+  <div><div class="page-title">إدارة المستخدمين</div></div>
+  <div class="d-flex gap-8">
+    <button class="btn btn-primary" onclick="openAddUser()">+ مستخدم جديد</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>اسم المستخدم</th><th>الاسم الكامل</th><th>الدور</th><th>الصلاحيات</th><th>الحالة</th><th>إجراء</th></tr></thead>
+      <tbody>
+        ${DB.users.map(u=>`
+          <tr>
+            <td class="fw-600" style="color:var(--primary)">${u.username}</td>
+            <td>${u.name}</td>
+            <td><span class="badge badge-info">${u.role}</span></td>
+            <td>${u.perms}</td>
+            <td><span class="badge ${u.status==='نشط'?'badge-success':'badge-danger'}">${u.status}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm">✏️ تعديل</button>
+              ${u.username!=='admin'?'<button class="btn btn-outline btn-sm btn-danger" style="color:var(--danger)">🚫 إيقاف</button>':''}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Audit Trail -->
+<div class="card" style="margin-top:20px">
+  <div class="card-header"><span class="card-title">🔍 سجل العمليات (Audit Trail)</span></div>
+  <div class="card-body" style="padding:0">
+    <table>
+      <thead><tr><th>التاريخ والوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr></thead>
+      <tbody>
+        ${auditLog.slice(0,10).map(l=>`
+          <tr>
+            <td style="font-size:12px;color:var(--text-muted)">${l.time}</td>
+            <td>${l.user}</td>
+            <td><span class="badge badge-gray">${l.action}</span></td>
+            <td>${l.detail}</td>
+          </tr>
+        `).join('')}
+        ${auditLog.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px">لا توجد سجلات بعد</td></tr>':''}
+      </tbody>
+    </table>
+  </div>
+</div>
+`;
+
+// SETTINGS
+pages.settings = () => `
+<div class="page-header"><div><div class="page-title">إعدادات النظام</div></div></div>
+<div class="two-col">
+  <div class="card">
+    <div class="card-header"><span class="card-title">⚙️ بيانات الشركة</span></div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group"><label>اسم الشركة</label><input class="form-control" value="آل شلتوت للتجارة"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>الرقم الضريبي</label><input class="form-control" value="300123456789003"></div>
+        <div class="form-group"><label>السجل التجاري</label><input class="form-control" value="1010123456"></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label>العملة الافتراضية</label><select class="form-control"><option>ريال سعودي (ر.س)</option></select></div>
+        <div class="form-group"><label>نسبة ضريبة القيمة المضافة</label><input class="form-control" value="15%"></div>
+      </div>
+      <button class="btn btn-primary">💾 حفظ التغييرات</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">🔒 إعدادات النظام</span></div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group"><label>السنة المالية</label><select class="form-control"><option>يناير — ديسمبر</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>طريقة احتساب تكلفة المخزون</label><select class="form-control"><option>المتوسط المرجح</option><option>FIFO</option><option>LIFO</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>النسخ الاحتياطي</label><select class="form-control"><option>يومي تلقائي</option><option>أسبوعي</option></select></div>
+      </div>
+      <button class="btn btn-primary">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+`;
+
+// ===================== ACTIONS =====================
+function approveItem(id) {
+  const item = DB.approvals.find(a=>a.id===id);
+  if(item) { item.status='معتمد'; logAudit('اعتماد', 'اعتمد '+item.type+': '+item.desc); showPage('approvals',null); }
+}
+function rejectItem(id) {
+  const item = DB.approvals.find(a=>a.id===id);
+  if(item) { item.status='مرفوض'; logAudit('رفض', 'رفض '+item.type+': '+item.desc); showPage('approvals',null); }
+}
+
+function openModal(title, body, footer='') {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-footer').innerHTML = footer;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) { if(e.target===document.getElementById('modal-overlay')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+function openAddAccount() {
+  openModal('إضافة حساب جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>كود الحساب</label><input class="form-control" id="acc-code" placeholder="مثال: 1150"></div>
+      <div class="form-group"><label>اسم الحساب</label><input class="form-control" id="acc-name" placeholder="اسم الحساب"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>النوع</label><select class="form-control"><option>رئيسي</option><option>فرعي</option></select></div>
+      <div class="form-group"><label>الحساب الأب</label><select class="form-control"><option>لا يوجد</option>${DB.accounts.map(a=>`<option>${a.code} - ${a.name}</option>`).join('')}</select></div>
+    </div>
+  `, `<button class="btn btn-primary" onclick="saveAccount()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function saveAccount() {
+  const code = document.getElementById('acc-code').value;
+  const name = document.getElementById('acc-name').value;
+  if(code && name) {
+    DB.accounts.push({code, name, type:'فرعي', level:3, balance:0});
+    logAudit('إضافة حساب', 'أضاف حساب '+name);
+    closeModalDirect();
+    showPage('accounts', null);
+  }
+}
+
+function openAddJournal() {
+  openModal('قيد يومية جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>التاريخ</label><input type="date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label>البيان</label><input class="form-control" placeholder="وصف القيد"></div>
+    </div>
+    <table style="width:100%;margin-top:12px">
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td><select class="form-control">${DB.accounts.map(a=>`<option>${a.code} - ${a.name}</option>`).join('')}</select></td><td><input class="form-control" type="number" placeholder="0"></td><td><input class="form-control" type="number" placeholder="0"></td></tr>
+        <tr><td><select class="form-control">${DB.accounts.map(a=>`<option>${a.code} - ${a.name}</option>`).join('')}</select></td><td><input class="form-control" type="number" placeholder="0"></td><td><input class="form-control" type="number" placeholder="0"></td></tr>
+      </tbody>
+    </table>
+  `, `<button class="btn btn-primary">💾 حفظ القيد</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function openReceipt() {
+  openModal('إذن قبض جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>التاريخ</label><input type="date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label>المبلغ</label><input type="number" class="form-control" placeholder="0.00"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>الحساب</label><select class="form-control"><option>الصندوق الرئيسي</option><option>البنك الأهلي</option></select></div>
+      <div class="form-group"><label>من</label><select class="form-control"><option>عميل</option><option>مورد</option><option>أخرى</option></select></div>
+    </div>
+    <div class="form-row"><div class="form-group"><label>البيان</label><input class="form-control" placeholder="سبب القبض"></div></div>
+  `, `<button class="btn btn-primary">💾 حفظ إذن القبض</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function openPayment() {
+  openModal('إذن صرف جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>التاريخ</label><input type="date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label>المبلغ</label><input type="number" class="form-control" placeholder="0.00"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>من حساب</label><select class="form-control"><option>الصندوق الرئيسي</option><option>البنك الأهلي</option></select></div>
+      <div class="form-group"><label>إلى</label><select class="form-control"><option>مورد</option><option>موظف</option><option>مصروف عام</option></select></div>
+    </div>
+    <div class="form-row"><div class="form-group"><label>البيان</label><input class="form-control" placeholder="سبب الصرف"></div></div>
+  `, `<button class="btn btn-primary">💾 حفظ إذن الصرف</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function openNewInvoice() {
+  openModal('فاتورة مبيعات جديدة', `
+    <div class="form-row cols-3">
+      <div class="form-group"><label>رقم الفاتورة</label><input class="form-control" value="INV-2025-005" readonly></div>
+      <div class="form-group"><label>التاريخ</label><input type="date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label>تاريخ الاستحقاق</label><input type="date" class="form-control"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>العميل</label><select class="form-control">${DB.customers.map(c=>`<option>${c.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>طريقة الدفع</label><select class="form-control"><option>آجل</option><option>نقدي</option><option>شيك</option></select></div>
+    </div>
+    <table style="width:100%;margin-top:12px;font-size:13px">
+      <thead style="background:#f8fafc"><tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><select class="form-control">${DB.items.map(i=>`<option>${i.name}</option>`).join('')}</select></td>
+          <td><input type="number" class="form-control" value="1" style="width:70px"></td>
+          <td><input type="number" class="form-control" value="3200" style="width:100px"></td>
+          <td class="fw-600">3,200</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:16px;text-align:left">
+      <div>المجموع: <strong>3,200 ر.س</strong></div>
+      <div>ضريبة القيمة المضافة 15%: <strong>480 ر.س</strong></div>
+      <div style="font-size:16px;margin-top:6px">الإجمالي: <strong style="color:var(--primary)">3,680 ر.س</strong></div>
+    </div>
+    <div class="alert alert-info" style="margin-top:12px">⚙️ سيتم إنشاء القيد المحاسبي تلقائياً عند حفظ الفاتورة</div>
+  `, `<button class="btn btn-primary" onclick="saveSalesInvoice()">💾 حفظ الفاتورة</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function saveSalesInvoice() {
+  DB.sales.unshift({id:'INV-2025-005', date:new Date().toISOString().split('T')[0], customer:'شركة النور التجارية', amount:3200, vat:480, total:3680, status:'معلقة', items:1});
+  DB.journals.unshift({id:'QD-2025-005', date:new Date().toISOString().split('T')[0], desc:'فاتورة مبيعات رقم INV-2025-005', debit:3680, credit:3680, status:'مرحّل', type:'مبيعات'});
+  logAudit('فاتورة مبيعات', 'أصدر فاتورة INV-2025-005 بقيمة 3,680 ر.س');
+  closeModalDirect();
+  showPage('sales', null);
+  alert('✅ تم حفظ الفاتورة وإنشاء القيد المحاسبي تلقائياً!');
+}
+
+function openNewPurchase() {
+  openModal('أمر شراء جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>رقم الأمر</label><input class="form-control" value="PO-2025-004" readonly></div>
+      <div class="form-group"><label>التاريخ</label><input type="date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>المورد</label><select class="form-control">${DB.suppliers.map(s=>`<option>${s.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>المخزن</label><select class="form-control"><option>المخزن الرئيسي</option></select></div>
+    </div>
+    <div class="alert alert-info" style="margin-top:12px">⚙️ سيتم إنشاء القيد المحاسبي وتحديث المخزون تلقائياً</div>
+  `, `<button class="btn btn-primary">💾 حفظ أمر الشراء</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function openAddItem() {
+  openModal('إضافة صنف جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>كود الصنف</label><input class="form-control" placeholder="تلقائي" readonly value="ITM-006"></div>
+      <div class="form-group"><label>الباركود</label><input class="form-control" placeholder="رقم الباركود"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>اسم الصنف</label><input class="form-control" id="item-name" placeholder="اسم الصنف"></div>
+      <div class="form-group"><label>الفئة</label><select class="form-control"><option>إلكترونيات</option><option>أثاث</option><option>مكتبية</option></select></div>
+    </div>
+    <div class="form-row cols-3">
+      <div class="form-group"><label>وحدة القياس</label><select class="form-control"><option>قطعة</option><option>كيلو</option><option>متر</option></select></div>
+      <div class="form-group"><label>سعر التكلفة</label><input type="number" class="form-control" id="item-cost"></div>
+      <div class="form-group"><label>سعر البيع</label><input type="number" class="form-control" id="item-price"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>الكمية الافتتاحية</label><input type="number" class="form-control" id="item-qty" value="0"></div>
+      <div class="form-group"><label>حد إعادة الطلب</label><input type="number" class="form-control" id="item-min" value="10"></div>
+    </div>
+  `, `<button class="btn btn-primary" onclick="saveItem()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function saveItem() {
+  const name = document.getElementById('item-name').value;
+  const cost = +document.getElementById('item-cost').value;
+  const price = +document.getElementById('item-price').value;
+  const qty = +document.getElementById('item-qty').value;
+  const minQty = +document.getElementById('item-min').value;
+  if(name) {
+    DB.items.push({code:'ITM-00'+(DB.items.length+1), name, category:'عام', unit:'قطعة', price, cost, qty, minQty, barcode:''});
+    logAudit('إضافة صنف', 'أضاف صنف '+name);
+    closeModalDirect();
+    showPage('inventory', null);
+  }
+}
+
+function openAddEmployee() {
+  openModal('إضافة موظف جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>اسم الموظف</label><input class="form-control" id="emp-name"></div>
+      <div class="form-group"><label>رقم الجوال</label><input class="form-control" id="emp-phone"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>القسم</label><select class="form-control" id="emp-dept"><option>المالية</option><option>المبيعات</option><option>المستودعات</option><option>الموارد البشرية</option><option>تقنية المعلومات</option></select></div>
+      <div class="form-group"><label>الوظيفة</label><input class="form-control" id="emp-pos"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>الراتب الأساسي</label><input type="number" class="form-control" id="emp-sal"></div>
+      <div class="form-group"><label>تاريخ التعيين</label><input type="date" class="form-control" id="emp-date" value="${new Date().toISOString().split('T')[0]}"></div>
+    </div>
+  `, `<button class="btn btn-primary" onclick="saveEmployee()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function saveEmployee() {
+  const name = document.getElementById('emp-name').value;
+  const dept = document.getElementById('emp-dept').value;
+  const pos = document.getElementById('emp-pos').value;
+  const sal = +document.getElementById('emp-sal').value;
+  const phone = document.getElementById('emp-phone').value;
+  if(name) {
+    const id = 'EMP-00'+(DB.employees.length+1);
+    DB.employees.push({id, name, dept, position:pos, salary:sal, status:'نشط', join:new Date().toISOString().split('T')[0], phone});
+    logAudit('إضافة موظف', 'أضاف الموظف '+name);
+    closeModalDirect();
+    showPage('employees', null);
+  }
+}
+
+function openAddCustomer() {
+  openModal('إضافة عميل جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>اسم العميل</label><input class="form-control" id="cus-name"></div>
+      <div class="form-group"><label>رقم الجوال</label><input class="form-control" id="cus-phone"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>المدينة</label><input class="form-control" id="cus-city"></div>
+      <div class="form-group"><label>حد الائتمان</label><input type="number" class="form-control" id="cus-credit" value="50000"></div>
+    </div>
+  `, `<button class="btn btn-primary" onclick="saveCustomer()">💾 حفظ</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function saveCustomer() {
+  const name = document.getElementById('cus-name').value;
+  if(name) {
+    DB.customers.push({id:'CUS-00'+(DB.customers.length+1), name, phone:document.getElementById('cus-phone').value, city:document.getElementById('cus-city').value, balance:0, credit:+document.getElementById('cus-credit').value, status:'نشط'});
+    logAudit('إضافة عميل', 'أضاف العميل '+name);
+    closeModalDirect();
+    showPage('customers', null);
+  }
+}
+
+function openAddUser() {
+  openModal('إضافة مستخدم جديد', `
+    <div class="form-row cols-2">
+      <div class="form-group"><label>اسم المستخدم</label><input class="form-control" id="usr-uname"></div>
+      <div class="form-group"><label>كلمة المرور</label><input type="password" class="form-control" id="usr-pass"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>الاسم الكامل</label><input class="form-control" id="usr-name"></div>
+      <div class="form-group"><label>الدور</label><select class="form-control"><option>محاسب</option><option>مبيعات</option><option>مشتريات</option><option>مستودعات</option><option>موارد بشرية</option><option>قراءة فقط</option></select></div>
+    </div>
+  `, `<button class="btn btn-primary">💾 إنشاء المستخدم</button><button class="btn btn-outline" onclick="closeModalDirect()">إلغاء</button>`);
+}
+
+function viewInvoice(id) {
+  const inv = DB.sales.find(s=>s.id===id);
+  if(!inv) return;
+  openModal('فاتورة رقم '+id, `
+    <div style="border:1px solid var(--border);border-radius:8px;padding:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+        <div><div style="font-size:20px;font-weight:700;color:var(--primary)">آل شلتوت للتجارة</div><div style="color:var(--text-muted);font-size:12px">الرقم الضريبي: 300123456789003</div></div>
+        <div style="text-align:left"><div class="fw-600">${inv.id}</div><div style="color:var(--text-muted);font-size:12px">${inv.date}</div></div>
+      </div>
+      <div><strong>العميل:</strong> ${inv.customer}</div>
+      <table style="width:100%;margin-top:16px"><thead><tr><th>الصنف</th><th>المبلغ</th></tr></thead><tbody><tr><td>بضائع متنوعة</td><td class="fw-600">${inv.amount.toLocaleString()} ر.س</td></tr></tbody></table>
+      <div style="margin-top:12px;text-align:left">
+        <div>المجموع: ${inv.amount.toLocaleString()} ر.س</div>
+        <div>ضريبة القيمة المضافة 15%: ${inv.vat.toLocaleString()} ر.س</div>
+        <div style="font-size:18px;font-weight:700;color:var(--primary);margin-top:6px">الإجمالي: ${inv.total.toLocaleString()} ر.س</div>
+      </div>
+    </div>
+  `, `<button class="btn btn-outline" onclick="closeModalDirect()">إغلاق</button><button class="btn btn-primary">🖨️ طباعة</button>`);
+}
+
+function showNotifs() {
+  openModal('الإشعارات', `
+    <div class="alert alert-warning">⚠️ صنف "طابعة HP" وصل لحد إعادة الطلب (8 قطع)</div>
+    <div class="alert alert-warning">⚠️ صنف "شاشة سامسونج" وصل لحد إعادة الطلب (5 قطع)</div>
+    <div class="alert alert-info">📋 5 طلبات موافقة معلقة تنتظرك</div>
+    <div class="alert alert-danger">💰 فاتورة INV-2025-004 متأخرة السداد (شركة البدر)</div>
+    <div class="alert alert-info">📅 عقد موظف ينتهي خلال 30 يوم</div>
+  `, `<button class="btn btn-outline" onclick="closeModalDirect()">إغلاق</button>`);
+}
+
+function showTrialBalance() {
+  showPage('financial-reports', null);
+}
+
+function exportData() { alert('📊 جاري تصدير البيانات إلى Excel...'); }
+function printPage() { window.print(); }
+
+// Login on Enter
+document.addEventListener('keydown', e => { if(e.key==='Enter' && document.getElementById('login-screen').style.display!=='none') doLogin(); });
+
+// Init
+showPage('dashboard', document.querySelector('.nav-item'));
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done: $(wc -c < /mnt/user-data/outputs/al_shaltout_erp.html) bytes"
+Output
+
+Done: 89621 bytes
